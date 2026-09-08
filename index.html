@@ -20,7 +20,8 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: #fff;
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: 10px;
         }
 
         /* Animated background orbs */
@@ -34,18 +35,20 @@
             animation: float 8s ease-in-out infinite alternate;
         }
         body::before {
-            width: 500px; height: 500px;
+            width: clamp(250px, 40vw, 500px);
+            height: clamp(250px, 40vw, 500px);
             background: #e74c3c;
             top: -150px; left: -100px;
         }
         body::after {
-            width: 400px; height: 400px;
+            width: clamp(200px, 35vw, 400px);
+            height: clamp(200px, 35vw, 400px);
             background: #3498db;
             bottom: -100px; right: -80px;
             animation-delay: 2s;
         }
         @keyframes float {
-            to { transform: translate(60px, 40px) scale(1.1); }
+            to { transform: translate(40px, 30px) scale(1.1); }
         }
 
         .container {
@@ -54,18 +57,38 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            padding: 20px;
+            gap: 15px;
+            padding: 10px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
         }
 
         h1 {
-            font-size: 2.4rem;
+            font-size: clamp(1.8rem, 5vw, 2.4rem);
             font-weight: 900;
             letter-spacing: -1px;
             background: linear-gradient(90deg, #e74c3c, #9b59b6, #3498db);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .sound-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background 0.3s;
         }
 
         /* Glass Card */
@@ -75,8 +98,9 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            padding: 24px;
+            padding: clamp(12px, 4vw, 20px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            width: 100%;
         }
 
         /* Controls Row */
@@ -93,18 +117,21 @@
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.08);
+            width: 100%;
         }
 
         .toggle-btn {
-            padding: 10px 18px;
+            flex: 1;
+            padding: 10px 12px;
             font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
             font-weight: 600;
             color: rgba(255,255,255,0.5);
             background: transparent;
             border: none;
             cursor: pointer;
             transition: all 0.3s;
+            text-align: center;
         }
 
         .toggle-btn.active {
@@ -113,15 +140,11 @@
             box-shadow: inset 0 0 20px rgba(255,255,255,0.05);
         }
 
-        .toggle-btn:hover:not(.active) {
-            color: rgba(255,255,255,0.8);
-        }
-
         /* Scoreboard */
         .scoreboard {
             display: flex;
-            gap: 30px;
-            justify-content: center;
+            gap: 15px;
+            justify-content: space-around;
             align-items: center;
             width: 100%;
         }
@@ -131,16 +154,16 @@
         }
 
         .score-label {
-            font-size: 0.75rem;
+            font-size: clamp(0.65rem, 2vw, 0.75rem);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             color: rgba(255,255,255,0.4);
             margin-bottom: 4px;
         }
 
         .score-value {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
             font-weight: 700;
         }
 
@@ -148,23 +171,32 @@
         .score-o { color: #3498db; }
         .score-ties { color: #95a5a6; }
 
-        /* Game Board */
+        /* Responsive Board Container */
+        .board-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
         .board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 320px;
-            height: 320px;
+            grid-template-rows: repeat(3, 1fr);
+            gap: clamp(8px, 2vw, 12px);
+            width: 100%;
+            height: 100%;
         }
 
         .cell {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
+            border-radius: clamp(10px, 3vw, 16px);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.8rem;
+            font-size: clamp(2rem, 8vw, 2.8rem);
             font-weight: 900;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -199,7 +231,7 @@
         .overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 12, 41, 0.85);
+            background: rgba(15, 12, 41, 0.88);
             backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
@@ -218,7 +250,7 @@
         }
 
         .winner-text {
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
             font-weight: 700;
             margin-bottom: 20px;
             text-align: center;
@@ -242,19 +274,31 @@
             transform: translateY(-2px);
             box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
         }
+
+        footer {
+            margin-top: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>TIC TAC TOE</h1>
+        <div class="header-row">
+            <h1>TIC TAC TOE</h1>
+            <button class="sound-btn" id="sound-btn" title="Toggle Sound">🔊</button>
+        </div>
 
         <div class="controls glass">
             <div class="toggle-group" id="mode-toggle">
                 <button class="toggle-btn active" data-mode="pvp">2 Players</button>
                 <button class="toggle-btn" data-mode="ai">Vs AI</button>
             </div>
-            <div class="toggle-group" id="diff-toggle" style="display: none;">
+            <div class="toggle-group" id="diff-toggle" style="display: none; margin-top: 8px;">
                 <button class="toggle-btn active" data-diff="easy">Easy</button>
                 <button class="toggle-btn" data-diff="unbeatable">Unbeatable</button>
             </div>
@@ -275,7 +319,7 @@
             </div>
         </div>
 
-        <div class="glass" style="position: relative;">
+        <div class="glass board-wrapper">
             <div class="board" id="board">
                 <div class="cell" data-index="0"></div>
                 <div class="cell" data-index="1"></div>
@@ -293,9 +337,106 @@
                 <button class="reset-btn" id="restart-btn">Play Again</button>
             </div>
         </div>
+
+        <footer>
+            &copy; Dhamarikar Group 2026
+        </footer>
     </div>
 
     <script>
+        // Audio Engine using Web Audio API
+        let audioCtx = null;
+        let soundMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playClickSound() {
+            if (soundMuted) return;
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        function playWinSound() {
+            if (soundMuted) return;
+            initAudio();
+            const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+            notes.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime + i * 0.08);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.08 + 0.2);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(audioCtx.currentTime + i * 0.08);
+                osc.stop(audioCtx.currentTime + i * 0.08 + 0.2);
+            });
+        }
+
+        // AI Victory "Faaah" Sound Effect Synthesizer
+        function playFaaahSound() {
+            if (soundMuted) return;
+            initAudio();
+
+            // Low frequency buzz/tone drop
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.8);
+
+            // Breath/Exhale Noise simulation
+            const bufferSize = audioCtx.sampleRate * 0.8;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            const noiseFilter = audioCtx.createBiquadFilter();
+            noiseFilter.type = 'bandpass';
+            noiseFilter.frequency.setValueAtTime(400, audioCtx.currentTime);
+            noiseFilter.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.8);
+
+            const noiseGain = audioCtx.createGain();
+            noiseGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(audioCtx.destination);
+
+            osc.start();
+            noise.start();
+            osc.stop(audioCtx.currentTime + 0.8);
+            noise.stop(audioCtx.currentTime + 0.8);
+        }
+
         const WINNING_COMBOS = [
             [0, 1, 2], [3, 4, 5], [6, 7, 8],
             [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -305,8 +446,8 @@
         let boardState = Array(9).fill(null);
         let currentPlayer = 'X';
         let gameActive = true;
-        let gameMode = 'pvp'; // 'pvp' or 'ai'
-        let difficulty = 'easy'; // 'easy' or 'unbeatable'
+        let gameMode = 'pvp'; 
+        let difficulty = 'easy'; 
         let scores = { X: 0, O: 0, ties: 0 };
 
         // DOM Elements
@@ -318,6 +459,13 @@
         const diffToggle = document.getElementById('diff-toggle');
         const diffButtons = document.querySelectorAll('#diff-toggle .toggle-btn');
         const labelO = document.getElementById('label-o');
+        const soundBtn = document.getElementById('sound-btn');
+
+        // Mute / Unmute Toggle
+        soundBtn.addEventListener('click', () => {
+            soundMuted = !soundMuted;
+            soundBtn.textContent = soundMuted ? '🔇' : '🔊';
+        });
 
         // Event Listeners
         cells.forEach(cell => cell.addEventListener('click', handleCellClick));
@@ -325,6 +473,7 @@
 
         modeButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
+                playClickSound();
                 modeButtons.forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 gameMode = e.target.dataset.mode;
@@ -336,6 +485,7 @@
 
         diffButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
+                playClickSound();
                 diffButtons.forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 difficulty = e.target.dataset.diff;
@@ -347,6 +497,7 @@
             const index = e.target.dataset.index;
             if (boardState[index] !== null || !gameActive) return;
 
+            playClickSound();
             makeMove(index, currentPlayer);
 
             if (gameActive && gameMode === 'ai' && currentPlayer === 'O') {
@@ -381,11 +532,12 @@
             }
 
             if (move !== undefined) {
+                playClickSound();
                 makeMove(move, 'O');
             }
         }
 
-        // Minimax Algorithm for Unbeatable AI
+        // Minimax Algorithm
         function minimax(newBoard, player) {
             const availSpots = newBoard
                 .map((val, idx) => val === null ? idx : null)
@@ -451,14 +603,20 @@
                 scores[currentPlayer]++;
                 document.getElementById(`score-${currentPlayer.toLowerCase()}`).textContent = scores[currentPlayer];
                 winCombo.forEach(idx => cells[idx].classList.add('winning'));
-                winnerText.textContent = gameMode === 'ai' && currentPlayer === 'O' 
-                    ? 'AI Wins!' 
-                    : `Player ${currentPlayer} Wins!`;
+                
+                if (gameMode === 'ai' && currentPlayer === 'O') {
+                    winnerText.textContent = 'AI Wins!';
+                    playFaaahSound(); // Play synthesized "Faaah" sound when AI wins
+                } else {
+                    winnerText.textContent = `Player ${currentPlayer} Wins!`;
+                    playWinSound();
+                }
             }
             overlay.classList.add('active');
         }
 
         function resetBoard() {
+            playClickSound();
             boardState = Array(9).fill(null);
             currentPlayer = 'X';
             gameActive = true;
