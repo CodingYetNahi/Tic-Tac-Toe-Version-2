@@ -2,245 +2,250 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe — Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tic Tac Toe</title>
     <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at 50% 0%, #1e2638 0%, #0d1118 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-card: rgba(255, 255, 255, 0.03);
+            --accent-x: #ff453a;
+            --accent-o: #0a84ff;
+            --text-primary: rgba(255, 255, 255, 0.92);
+            --text-secondary: rgba(255, 255, 255, 0.48);
+            --segmented-bg: rgba(118, 118, 128, 0.24);
+            --segmented-active: rgba(255, 255, 255, 0.2);
+            --radius-xl: 24px;
+            --radius-l: 16px;
+            --radius-m: 12px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #000000;
+            background-image: var(--bg-gradient);
+            color: var(--text-primary);
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #fff;
-            overflow-x: hidden;
-            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
         }
 
-        /* Animated background orbs */
-        body::before, body::after {
-            content: '';
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.4;
-            z-index: 0;
-            animation: float 8s ease-in-out infinite alternate;
-        }
+        /* Ambient Glow Background */
         body::before {
-            width: clamp(250px, 40vw, 500px);
-            height: clamp(250px, 40vw, 500px);
-            background: #e74c3c;
-            top: -150px; left: -100px;
-        }
-        body::after {
-            width: clamp(200px, 35vw, 400px);
-            height: clamp(200px, 35vw, 400px);
-            background: #3498db;
-            bottom: -100px; right: -80px;
-            animation-delay: 2s;
-        }
-        @keyframes float {
-            to { transform: translate(40px, 30px) scale(1.1); }
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(10, 132, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .container {
+        .app-container {
             position: relative;
             z-index: 1;
+            width: 100%;
+            max-width: 380px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            padding: 10px;
-            width: 100%;
-            max-width: 420px;
+            gap: 20px;
         }
 
-        .header-row {
+        /* Top Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 4px;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .sound-toggle {
+            background: var(--segmented-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 100%;
-        }
-
-        h1 {
-            font-size: clamp(1.8rem, 5vw, 2.4rem);
-            font-weight: 900;
-            letter-spacing: -1px;
-            background: linear-gradient(90deg, #e74c3c, #9b59b6, #3498db);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sound-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 10px;
+            justify-content: center;
             cursor: pointer;
-            font-size: 1.1rem;
-            transition: background 0.3s;
-        }
-
-        /* Glass Card */
-        .glass {
-            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: clamp(12px, 4vw, 20px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            width: 100%;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Controls Row */
-        .controls {
+        .sound-toggle:active {
+            transform: scale(0.92);
+        }
+
+        /* Glass Container Cards */
+        .card {
+            background: var(--glass-card);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Apple iOS Segmented Control */
+        .segmented-control {
+            background: var(--segmented-bg);
+            border-radius: var(--radius-m);
+            padding: 2px;
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 2px;
+            position: relative;
         }
 
-        .toggle-group {
-            display: flex;
-            background: rgba(255,255,255,0.07);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.08);
-            width: 100%;
+        .segmented-control + .segmented-control {
+            margin-top: 10px;
         }
 
-        .toggle-btn {
+        .segment-btn {
             flex: 1;
-            padding: 10px 12px;
-            font-family: 'Inter', sans-serif;
-            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
-            font-weight: 600;
-            color: rgba(255,255,255,0.5);
-            background: transparent;
             border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 8px 0;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            z-index: 1;
         }
 
-        .toggle-btn.active {
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.05);
+        .segment-btn.active {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         /* Scoreboard */
         .scoreboard {
-            display: flex;
-            gap: 15px;
-            justify-content: space-around;
-            align-items: center;
-            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            text-align: center;
+            padding: 14px 12px;
         }
 
-        .score-item {
-            text-align: center;
+        .score-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .score-label {
-            font-size: clamp(0.65rem, 2vw, 0.75rem);
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
         }
 
-        .score-value {
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
+        .score-num {
+            font-size: 1.4rem;
             font-weight: 700;
+            font-variant-numeric: tabular-nums;
         }
 
-        .score-x { color: #e74c3c; }
-        .score-o { color: #3498db; }
-        .score-ties { color: #95a5a6; }
+        .score-num.x { color: var(--accent-x); }
+        .score-num.o { color: var(--accent-o); }
+        .score-num.ties { color: var(--text-primary); }
 
-        /* Responsive Board Container */
-        .board-wrapper {
+        /* Board Container Alignment Fix */
+        .board-card {
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            max-width: 320px;
-            margin: 0 auto;
         }
 
         .board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: clamp(8px, 2vw, 12px);
+            gap: 12px;
             width: 100%;
-            height: 100%;
+            aspect-ratio: 1 / 1;
         }
 
         .cell {
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: clamp(10px, 3vw, 16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-l);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(2rem, 8vw, 2.8rem);
-            font-weight: 900;
+            font-size: 2.5rem;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s ease;
             user-select: none;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .cell:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+        .cell:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .cell.x {
-            color: #e74c3c;
-            text-shadow: 0 0 20px rgba(231, 76, 60, 0.6);
+            color: var(--accent-x);
+            text-shadow: 0 0 16px rgba(255, 69, 58, 0.4);
         }
 
         .cell.o {
-            color: #3498db;
-            text-shadow: 0 0 20px rgba(52, 152, 219, 0.6);
+            color: var(--accent-o);
+            text-shadow: 0 0 16px rgba(10, 132, 255, 0.4);
         }
 
         .cell.winning {
-            background: rgba(255, 255, 255, 0.2);
-            animation: pulse 1s infinite alternate;
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
-        @keyframes pulse {
-            to { transform: scale(1.03); }
-        }
-
-        /* Overlay & Modal */
+        /* Overlay Modal */
         .overlay {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 12, 41, 0.88);
-            backdrop-filter: blur(10px);
+            inset: 0;
+            background: rgba(13, 17, 24, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: var(--radius-xl);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
+            gap: 16px;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
             z-index: 10;
         }
 
@@ -249,77 +254,83 @@
             pointer-events: auto;
         }
 
-        .winner-text {
-            font-size: clamp(1.4rem, 4vw, 1.8rem);
+        .status-title {
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
+            letter-spacing: -0.3px;
         }
 
-        .reset-btn {
-            padding: 12px 28px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
-            background: linear-gradient(90deg, #e74c3c, #9b59b6, #3498db);
+        .action-btn {
+            background: #ffffff;
+            color: #000000;
             border: none;
-            border-radius: 12px;
+            padding: 12px 28px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 99px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
         }
 
-        .reset-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        .action-btn:active {
+            transform: scale(0.94);
         }
 
         footer {
-            margin-top: 5px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 0.5px;
             text-align: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.2px;
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header-row">
-            <h1>TIC TAC TOE</h1>
-            <button class="sound-btn" id="sound-btn" title="Toggle Sound">🔊</button>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="title">Tic Tac Toe</div>
+            <button class="sound-toggle" id="sound-toggle" aria-label="Toggle Sound">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+            </button>
         </div>
 
-        <div class="controls glass">
-            <div class="toggle-group" id="mode-toggle">
-                <button class="toggle-btn active" data-mode="pvp">2 Players</button>
-                <button class="toggle-btn" data-mode="ai">Vs AI</button>
+        <!-- Mode Selectors -->
+        <div class="card">
+            <div class="segmented-control" id="mode-toggle">
+                <button class="segment-btn active" data-mode="pvp">2 Players</button>
+                <button class="segment-btn" data-mode="ai">Vs AI</button>
             </div>
-            <div class="toggle-group" id="diff-toggle" style="display: none; margin-top: 8px;">
-                <button class="toggle-btn active" data-diff="easy">Easy</button>
-                <button class="toggle-btn" data-diff="unbeatable">Unbeatable</button>
-            </div>
-        </div>
-
-        <div class="scoreboard glass">
-            <div class="score-item">
-                <div class="score-label" id="label-x">Player X</div>
-                <div class="score-value score-x" id="score-x">0</div>
-            </div>
-            <div class="score-item">
-                <div class="score-label">Ties</div>
-                <div class="score-value score-ties" id="score-ties">0</div>
-            </div>
-            <div class="score-item">
-                <div class="score-label" id="label-o">Player O</div>
-                <div class="score-value score-o" id="score-o">0</div>
+            <div class="segmented-control" id="diff-toggle" style="display: none;">
+                <button class="segment-btn active" data-diff="easy">Easy</button>
+                <button class="segment-btn" data-diff="unbeatable">Unbeatable</button>
             </div>
         </div>
 
-        <div class="glass board-wrapper">
+        <!-- Scoreboard -->
+        <div class="card scoreboard">
+            <div class="score-col">
+                <span class="score-label" id="label-x">Player X</span>
+                <span class="score-num x" id="score-x">0</span>
+            </div>
+            <div class="score-col">
+                <span class="score-label">Ties</span>
+                <span class="score-num ties" id="score-ties">0</span>
+            </div>
+            <div class="score-col">
+                <span class="score-label" id="label-o">Player O</span>
+                <span class="score-num o" id="score-o">0</span>
+            </div>
+        </div>
+
+        <!-- Game Board -->
+        <div class="card board-card">
             <div class="board" id="board">
                 <div class="cell" data-index="0"></div>
                 <div class="cell" data-index="1"></div>
@@ -332,9 +343,10 @@
                 <div class="cell" data-index="8"></div>
             </div>
 
+            <!-- Result Overlay -->
             <div class="overlay" id="overlay">
-                <div class="winner-text" id="winner-text">X Wins!</div>
-                <button class="reset-btn" id="restart-btn">Play Again</button>
+                <div class="status-title" id="winner-text">Player X Wins</div>
+                <button class="action-btn" id="restart-btn">Play Again</button>
             </div>
         </div>
 
@@ -344,7 +356,7 @@
     </div>
 
     <script>
-        // Audio Engine using Web Audio API
+        // Web Audio Synthesizer
         let audioCtx = null;
         let soundMuted = false;
 
@@ -363,47 +375,45 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.04);
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.05);
+            osc.stop(audioCtx.currentTime + 0.04);
         }
 
         function playWinSound() {
             if (soundMuted) return;
             initAudio();
-            const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
             notes.forEach((freq, i) => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
+                osc.type = 'sine';
                 osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime + i * 0.08);
-                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.08 + 0.2);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime + i * 0.07);
+                gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.07 + 0.15);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                osc.start(audioCtx.currentTime + i * 0.08);
-                osc.stop(audioCtx.currentTime + i * 0.08 + 0.2);
+                osc.start(audioCtx.currentTime + i * 0.07);
+                osc.stop(audioCtx.currentTime + i * 0.07 + 0.15);
             });
         }
 
-        // AI Victory "Faaah" Sound Effect Synthesizer
         function playFaaahSound() {
             if (soundMuted) return;
             initAudio();
 
-            // Low frequency buzz/tone drop
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(140, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.8);
+            osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(45, audioCtx.currentTime + 0.7);
 
-            // Breath/Exhale Noise simulation
-            const bufferSize = audioCtx.sampleRate * 0.8;
+            const bufferSize = audioCtx.sampleRate * 0.7;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
             const output = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) {
@@ -414,15 +424,15 @@
 
             const noiseFilter = audioCtx.createBiquadFilter();
             noiseFilter.type = 'bandpass';
-            noiseFilter.frequency.setValueAtTime(400, audioCtx.currentTime);
-            noiseFilter.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.8);
+            noiseFilter.frequency.setValueAtTime(350, audioCtx.currentTime);
+            noiseFilter.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.7);
 
             const noiseGain = audioCtx.createGain();
-            noiseGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            noiseGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+            noiseGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.7);
 
-            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+            gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.7);
 
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -433,8 +443,8 @@
 
             osc.start();
             noise.start();
-            osc.stop(audioCtx.currentTime + 0.8);
-            noise.stop(audioCtx.currentTime + 0.8);
+            osc.stop(audioCtx.currentTime + 0.7);
+            noise.stop(audioCtx.currentTime + 0.7);
         }
 
         const WINNING_COMBOS = [
@@ -450,24 +460,22 @@
         let difficulty = 'easy'; 
         let scores = { X: 0, O: 0, ties: 0 };
 
-        // DOM Elements
+        // DOM
         const cells = document.querySelectorAll('.cell');
         const overlay = document.getElementById('overlay');
         const winnerText = document.getElementById('winner-text');
         const restartBtn = document.getElementById('restart-btn');
-        const modeButtons = document.querySelectorAll('#mode-toggle .toggle-btn');
+        const modeButtons = document.querySelectorAll('#mode-toggle .segment-btn');
         const diffToggle = document.getElementById('diff-toggle');
-        const diffButtons = document.querySelectorAll('#diff-toggle .toggle-btn');
+        const diffButtons = document.querySelectorAll('#diff-toggle .segment-btn');
         const labelO = document.getElementById('label-o');
-        const soundBtn = document.getElementById('sound-btn');
+        const soundToggle = document.getElementById('sound-toggle');
 
-        // Mute / Unmute Toggle
-        soundBtn.addEventListener('click', () => {
+        soundToggle.addEventListener('click', () => {
             soundMuted = !soundMuted;
-            soundBtn.textContent = soundMuted ? '🔇' : '🔊';
+            soundToggle.style.opacity = soundMuted ? '0.4' : '1';
         });
 
-        // Event Listeners
         cells.forEach(cell => cell.addEventListener('click', handleCellClick));
         restartBtn.addEventListener('click', resetBoard);
 
@@ -537,7 +545,6 @@
             }
         }
 
-        // Minimax Algorithm
         function minimax(newBoard, player) {
             const availSpots = newBoard
                 .map((val, idx) => val === null ? idx : null)
@@ -598,17 +605,17 @@
             if (draw) {
                 scores.ties++;
                 document.getElementById('score-ties').textContent = scores.ties;
-                winnerText.textContent = "It's a Draw!";
+                winnerText.textContent = "It's a Draw";
             } else {
                 scores[currentPlayer]++;
                 document.getElementById(`score-${currentPlayer.toLowerCase()}`).textContent = scores[currentPlayer];
                 winCombo.forEach(idx => cells[idx].classList.add('winning'));
                 
                 if (gameMode === 'ai' && currentPlayer === 'O') {
-                    winnerText.textContent = 'AI Wins!';
-                    playFaaahSound(); // Play synthesized "Faaah" sound when AI wins
+                    winnerText.textContent = 'AI Wins';
+                    playFaaahSound();
                 } else {
-                    winnerText.textContent = `Player ${currentPlayer} Wins!`;
+                    winnerText.textContent = `Player ${currentPlayer} Wins`;
                     playWinSound();
                 }
             }
